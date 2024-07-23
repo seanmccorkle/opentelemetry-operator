@@ -13,3 +13,17 @@
 [TargetAllocator : error during loading configuration](https://github.com/open-telemetry/opentelemetry-operator/issues/1811)<br>
 [Target Allocator not able to allocate](https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/23342)<br>
 [Troubleshooting the OpenTelemetry Target Allocator](https://trstringer.com/opentelemetry-target-allocator-troubleshooting/)<br>
+[opentelemetry.io: getting started](https://opentelemetry.io/docs/kubernetes/getting-started/)<br>
+
+# install
+
+[docker pull opentelemetry-operator](https://github.com/open-telemetry/opentelemetry-operator/pkgs/container/opentelemetry-operator%2Fopentelemetry-operator)<br>
+```
+docker pull ghcr.io/open-telemetry/opentelemetry-operator/opentelemetry-operator:main
+```
+[cert-manager installation](https://cert-manager.io/docs/installation/)<br>
+[installing cert-manager](https://cert-manager.io/docs/installation/helm/#installing-cert-manager)<br>
+
+```
+helm install opentelemetry-operator ../opentelemetry-operator --namespace opentelemetry-operator-system --set admissionWebhooks.certManager.enabled=false --set admissionWebhooks.autoGenerateCert.enabled=true
+```
