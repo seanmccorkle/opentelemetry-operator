@@ -1,0 +1,23 @@
+name: otel-operator
+app: otel-operator
+namespace: opentelemetry-operator-system
+
+targetAllocator:
+  name: otel-collector-ta
+  image: "otel/opentelemetry-collector-contrib:0.78.0"
+  enabled: true
+  prometheusCR:
+    enabled: true
+  component: target-allocator
+  serviceAccount: otel-target-allocator-sa
+  clusterRole: 
+    base: otel-target-allocator-base
+    monitor: otel-target-allocator-monitor
+  clusterRoleBinding:
+    base: otel-target-allocator-base
+    monitor: otel-target-allocator-monitor
+  
+serviceMonitor:
+  name: otel-self-metrics
+  interval: 30s
+  port: 8888
