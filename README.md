@@ -27,3 +27,13 @@ docker pull ghcr.io/open-telemetry/opentelemetry-operator/opentelemetry-operator
 ```
 helm install opentelemetry-operator ../opentelemetry-operator --namespace opentelemetry-operator-system --set admissionWebhooks.certManager.enabled=false --set admissionWebhooks.autoGenerateCert.enabled=true
 ```
+
+# images
+
+```
+.Values.manager.image = ghcr.io/open-telemetry/opentelemetry-operator/opentelemetry-operator:main
+.Values.manager.collectorImage = otel/opentelemetry-collector
+.Values.manager.collectorImage = otel/opentelemetry-collector-contrib
+.Values.manager.targetAllocatorImage = ghcr.io/open-telemetry/opentelemetry-operator/target-allocator:main
+
+```
