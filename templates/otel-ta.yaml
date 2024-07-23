@@ -1,0 +1,98 @@
+---
+#apiVersion: opentelemetry.io/v1alpha1 # deprecated
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: {{ .Values.targetAllocator.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  image: {{ .Values.targetAllocator.image }}
+  mode: statefulset
+  targetAllocator:
+    enabled: {{ .Values.targetAllocator.enabled }}
+    serviceAccount: {{ .Values.targetAllocator.serviceAccount }}
+    prometheusCR:
+      enabled: {{ .Values.targetAllocator.prometheusCR.enabled }}
+      serviceMonitorSelector: {}
+      podMonitorSelector: {}
+
+  #livenessProbe:
+  #  failureThreshold: 600
+  #  initialDelaySeconds: 60
+  #  periodSeconds: 300
+  #  successThreshold: 60
+  #  terminationGracePeriodSeconds: 30
+  #  timeoutSeconds: 30
+
+  #readinessProbe:
+  #  initialDelaySeconds: 5
+  #  periodSeconds: 20
+  #  timeoutSeconds: 5
+  #  exec:
+  #    #command: []
+  #    #command: ['/srv/health_check.sh', 'readiness_probe', 'localhost', "7000"]
+  #    #command:
+  #    #  - /bin/sh
+  #    #  - -c
+  #    #  - uptime
+  #    #command:
+  #    #  - /otelcol --config=/etc/otel-collector/config.yaml --http-endpoint=
+
+  #config: | # works with opentelemetry.io/v1alpha1
+  config: # works with opentelemetry.io/v1beta1
+    receivers:
+      prometheus:
+        config:
+          scrape_configs:
+          - job_name: "otel-collector-self-metrics"
+            scrape_interval: 10s
+            static_configs:
+            - targets: [ "0.0.0.0:8888" ]
+            #- targets: [ "${env:MY_POD_IP}:8888" ]
+            metric_relabel_configs:
+            - action: labeldrop
+              regex: (id|name)
+              replacement: $$1
+            - action: labelmap
+              regex: label_(.+)
+              replacement: $$1 
+
+    exporters:
+      # NOTE: Prior to v0.86.0 use `logging` instead of `debug`.
+      #debug: {}
+      prometheusremotewrite:
+        endpoint: "http://kube-prometheus-stack-56-8-prometheus.default.svc.cluster.local:9090"
+        #endpoint: "http://prometheus-remote-write.default.svc.cluster.local:9095/write"
+
+    processors:
+      memory_limiter:
+        check_interval: 1s
+        limit_percentage: 75
+        spike_limit_percentage: 15
+      batch:
+        send_batch_size: 10000
+        timeout: 10s
+
+    service:
+      pipelines:
+        metrics:
+          receivers: [prometheus]
+          processors: [memory_limiter, batch]
+          exporters: [prometheusremotewrite]
+      #extensions:
+      #  - health_check
+
+    #extensions:
+    #  #liveness:
+    #  #  initialDelaySeconds: 30
+    #  #readiness:
+    #  #  initialDelaySeconds: 30
+    #  health_check:
+    #    endpoint: "0.0.0.0:13133"
+    #    #endpoint: ${env:MY_POD_IP}:13133
+    #    #endpoint: 0.0.0.0:10696
+
+    #telemetry:
+    #  metrics:
+    #    address: "0.0.0.0:8888"
+    #    #address: ${env:MY_POD_IP}:8888
