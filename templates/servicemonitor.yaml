@@ -1,0 +1,23 @@
+# kubectl get servicemonitor -A
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: {{ .Values.app }}
+    component: {{ .Values.targetAllocator.component }}
+  name: {{ .Values.serviceMonitor.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app_kubernetes_io_component: {{ .Values.targetAllocator.component }}
+      app_kubernetes_io_name: {{ .Values.targetAllocator.name }}
+  namespaceSelector:
+    #any: true
+    matchNames:
+    - {{ .Values.namespace }}
+
+  endpoints:
+  - interval: {{ .Values.serviceMonitor.interval }}
+    port: "{{ .Values.serviceMonitor.port }}"
