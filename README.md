@@ -12,7 +12,6 @@
 [Is there a way to provide the config in Instrumentation and OpenTelemetryCollector in the form of a configmap?](https://github.com/open-telemetry/opentelemetry-operator/issues/1196)<br>
 [TargetAllocator : error during loading configuration](https://github.com/open-telemetry/opentelemetry-operator/issues/1811)<br>
 [Target Allocator not able to allocate](https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/23342)<br>
-[Troubleshooting the OpenTelemetry Target Allocator](https://trstringer.com/opentelemetry-target-allocator-troubleshooting/)<br>
 [opentelemetry.io: getting started](https://opentelemetry.io/docs/kubernetes/getting-started/)<br>
 
 # install
@@ -36,4 +35,14 @@ helm install opentelemetry-operator ../opentelemetry-operator --namespace opente
 .Values.manager.collectorImage = otel/opentelemetry-collector-contrib
 .Values.manager.targetAllocatorImage = ghcr.io/open-telemetry/opentelemetry-operator/target-allocator:main
 
+```
+
+# troubleshooting
+
+[Troubleshooting the OpenTelemetry Target Allocator](https://trstringer.com/opentelemetry-target-allocator-troubleshooting/)<br>
+```
+kubectl port-forward service/otel-collector-ta-targetallocator 8080:80 -n opentelemetry-operator-system
+curl localhost:8080/jobs | jq
+curl localhost:8080/jobs/otel-collector-self-metrics/targets | jq
+curl localhost:8080/scrape_configs | jq
 ```
