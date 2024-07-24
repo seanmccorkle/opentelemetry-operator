@@ -17,14 +17,17 @@
 
 # install
 
+[cert-manager installation](https://cert-manager.io/docs/installation/)<br>
+[installing cert-manager](https://cert-manager.io/docs/installation/helm/#installing-cert-manager)<br>
+```
+helm repo add jetstack https://charts.jetstack.io --force-update
+helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.15.1 --set crds.enabled=true
+```
+
 [docker pull opentelemetry-operator](https://github.com/open-telemetry/opentelemetry-operator/pkgs/container/opentelemetry-operator%2Fopentelemetry-operator)<br>
 ```
 docker pull ghcr.io/open-telemetry/opentelemetry-operator/opentelemetry-operator:main
-```
-[cert-manager installation](https://cert-manager.io/docs/installation/)<br>
-[installing cert-manager](https://cert-manager.io/docs/installation/helm/#installing-cert-manager)<br>
 
-```
 helm install opentelemetry-operator ../opentelemetry-operator --namespace opentelemetry-operator-system --set admissionWebhooks.certManager.enabled=false --set admissionWebhooks.autoGenerateCert.enabled=true
 ```
 
