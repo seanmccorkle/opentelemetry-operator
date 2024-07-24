@@ -14,8 +14,9 @@ spec:
     prometheusCR:
       enabled: {{ .Values.targetAllocator.prometheusCR.enabled }}
       serviceMonitorSelector:
-        app: {{ .Values.app }}
-        component: {{ .Values.targetAllocator.component }}
+        app: "kube-state-metrics"
+        #app: {{ .Values.app }}
+        #component: {{ .Values.targetAllocator.component }}
       #serviceMonitorSelector: {}
       #podMonitorSelector: {}
 
@@ -66,6 +67,10 @@ spec:
             #  source_labels:
             #  - __meta_kubernetes_pod_label_app_kubernetes_io_component
             #  - __meta_kubernetes_pod_label_app_kubernetes_io_name
+        target_allocator:
+          endpoint: http://otel-collector-ta-targetallocator
+          interval: 30s
+          collector_id: "${env:POD_NAME}"
 
     exporters:
       # NOTE: Prior to v0.86.0 use `logging` instead of `debug`.
