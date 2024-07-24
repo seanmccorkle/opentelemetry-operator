@@ -13,8 +13,11 @@ spec:
     serviceAccount: {{ .Values.targetAllocator.serviceAccount }}
     prometheusCR:
       enabled: {{ .Values.targetAllocator.prometheusCR.enabled }}
-      serviceMonitorSelector: {}
-      podMonitorSelector: {}
+      serviceMonitorSelector:
+        app: {{ .Values.app }}
+        component: {{ .Values.targetAllocator.component }}
+      #serviceMonitorSelector: {}
+      #podMonitorSelector: {}
 
   #livenessProbe:
   #  failureThreshold: 600
