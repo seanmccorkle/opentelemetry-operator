@@ -21,3 +21,19 @@
 #  endpoints:
 #  - interval: {{ .Values.serviceMonitor.interval }}
 #    port: "{{ .Values.serviceMonitor.port }}"
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kube-state-metrics
+  labels:
+    app: kube-state-metrics
+spec:
+  endpoints:
+    - interval: 30s
+      targetPort: 8080
+      path: /metrics
+  selector:
+    matchLabels:
+      app_kubernetes_io_name: kube-state-metrics
