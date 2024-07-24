@@ -48,21 +48,29 @@ spec:
             scrape_interval: 10s
             static_configs:
             - targets: [ "0.0.0.0:8888" ]
-            #- targets: [ "${env:MY_POD_IP}:8888" ]
             metric_relabel_configs:
             - action: labeldrop
               regex: (id|name)
               replacement: $$1
             - action: labelmap
               regex: label_(.+)
-              replacement: $$1 
+              replacement: $$1
+            #- action: labelmap
+            #  regex: __meta_kubernetes_pod_label_(.+)
+            #relabel_configs:
+            #- action: keep
+            #  regex: opentelemetry-collector;otel-collector-ta-collector
+            #  source_labels:
+            #  - __meta_kubernetes_pod_label_app_kubernetes_io_component
+            #  - __meta_kubernetes_pod_label_app_kubernetes_io_name
 
     exporters:
       # NOTE: Prior to v0.86.0 use `logging` instead of `debug`.
       #debug: {}
       prometheusremotewrite:
-        endpoint: "http://kube-prometheus-stack-56-8-prometheus.default.svc.cluster.local:9090"
-        #endpoint: "http://prometheus-remote-write.default.svc.cluster.local:9095/write"
+        endpoint: "http://kube-prometheus-stack-56-8-prometheus.default.svc.cluster.local:9090/api/v1/write"
+        external_labels:
+          pod_name: "${env:POD_NAME}"
 
     processors:
       memory_limiter:
