@@ -8,6 +8,7 @@
 [Let’s Learn About the OTel Operator’s Target Allocator!](https://adri-v.medium.com/lets-learn-about-the-otel-operator-s-target-allocator-47a2b1f07562)<br>
 [Prometheus Receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/prometheusreceiver/README.md)<br>
 [otc-container sidecar container is restarted infinitely if istio injection is enabled](https://github.com/open-telemetry/opentelemetry-operator/issues/946)<br>
+[Sidecar injection fails when Operator ready after target Pods](https://github.com/open-telemetry/opentelemetry-operator/issues/1765)<br>
 [opentelemetry-operator sidecar injection failing](https://github.com/open-telemetry/opentelemetry-operator/issues/1898)<br>
 [Is there a way to provide the config in Instrumentation and OpenTelemetryCollector in the form of a configmap?](https://github.com/open-telemetry/opentelemetry-operator/issues/1196)<br>
 [TargetAllocator : error during loading configuration](https://github.com/open-telemetry/opentelemetry-operator/issues/1811)<br>
