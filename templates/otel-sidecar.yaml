@@ -1,0 +1,71 @@
+---
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: {{ .Values.sidecar.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  mode: sidecar
+  image: {{ .Values.sidecar.image }}
+  config:
+    receivers:
+      prometheus:
+        config:
+          scrape_configs:
+          - job_name: "otel-self-metrics"
+            scrape_interval: 10s
+            static_configs:
+            - targets: [ "localhost:8888" ]
+            metric_relabel_configs:
+            - action: labeldrop
+              regex: (id|name)
+              #replacement: $$1
+            - action: labelmap
+              regex: __meta_kubernetes_pod_label_(.+)
+              #regex: label_(.+)
+              #replacement: $$1 
+          - job_name: "prometheus-sample-app"
+            scrape_interval: 10s
+            static_configs:
+            #- targets: [ "${KUBE_POD_IP}:8080" ]
+            - targets: [ "localhost:8080" ]
+
+    exporters:
+      # NOTE: Prior to v0.86.0 use `logging` instead of `debug`.
+      #debug: {}
+      prometheusremotewrite:
+        endpoint: "http://kube-prometheus-stack-56-8-prometheus.default.svc.cluster.local:9090/api/v1/write"
+        external_labels:
+          pod_name: "${env:POD_NAME}"
+          sidecar: "true"
+
+    processors:
+      memory_limiter:
+        check_interval: 1s
+        limit_percentage: 75
+        spike_limit_percentage: 15
+      batch:
+        send_batch_size: 10000
+        timeout: 10s
+
+    service:
+      pipelines:
+        metrics:
+          receivers: [prometheus]
+          processors: [memory_limiter, batch]
+          exporters: [prometheusremotewrite]
+      #extensions:
+      #  - health_check
+      #telemetry:
+      #  logs:
+      #    level: debug
+      #  metrics:
+      #    #address: "${KUBE_POD_IP}:8888"
+      #    address: "localhost:8888"
+      #    level: basic
+
+    #extensions:
+    #  health_check:
+    #    endpoint: "localhost:13133"
+    #    #endpoint: "${KUBE_POD_IP}:13133"
+    #    #endpoint: 0.0.0.0:10696
