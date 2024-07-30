@@ -1,0 +1,34 @@
+# https://github.com/open-o11y/prometheus-sample-app/blob/master/prometheus-sample-app-k8s-deployment.yaml
+# https://gallery.ecr.aws/g0z4v6x0/prometheus-sample-app
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-sample-app-deployment
+  namespace: {{ .Values.namespace }}
+  annotations:
+    sidecar.opentelemetry.io/inject: "true"
+spec:
+  selector:
+    matchLabels:
+      app: prometheus-sample-app
+  replicas: 1 # tells deployment to run 5 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: prometheus-sample-app
+      annotations:
+        prometheus.io/scrape: "true"
+        sidecar.opentelemetry.io/inject: "true"
+        #sidecar.opentelemetry.io/inject: {{ .Values.sidecar.name }}
+    spec:
+      containers:
+        - name: prometheus-sample-app
+          image: public.ecr.aws/g0z4v6x0/prometheus-sample-app:latest
+          imagePullPolicy: Never
+          command:
+            - "/bin/main"
+          args:
+            - "--metric_count=1"
+          ports:
+            - containerPort: 8080
