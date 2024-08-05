@@ -32,3 +32,25 @@ spec:
             - "--metric_count=1"
           ports:
             - containerPort: 8080
+
+## HELP test_counter0 This is my counter
+## TYPE test_counter0 counter
+#test_counter0 3695.096536922902
+## HELP test_gauge0 This is my gauge
+## TYPE test_gauge0 gauge
+#test_gauge0 3709.1382294084347
+## HELP test_histogram0 This is my histogram
+## TYPE test_histogram0 histogram
+#test_histogram0_bucket{le="0.005"} 35
+#test_histogram0_bucket{le="0.1"} 4621
+#test_histogram0_bucket{le="1"} 716827
+#test_histogram0_bucket{le="+Inf"} 716827
+#test_histogram0_sum 482587.241945764
+#test_histogram0_count 716827
+## HELP test_summary0 This is my summary
+## TYPE test_summary0 summary
+#test_summary0{quantile="0.1"} 0.999391166377522
+#test_summary0{quantile="0.5"} 0.999391166377522
+#test_summary0{quantile="0.99"} 0.999391166377522
+#test_summary0_sum 482587.241945764
+#test_summary0_count 716827
