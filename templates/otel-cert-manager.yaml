@@ -1,0 +1,65 @@
+---
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: "{{ .Values.targetAllocator.name }}-cert-manager"
+  namespace: {{ .Values.namespace }}
+spec:
+  image: {{ .Values.targetAllocator.image }}
+  mode: statefulset
+  targetAllocator:
+    enabled: {{ .Values.targetAllocator.enabled }}
+    serviceAccount: {{ .Values.targetAllocator.serviceAccount }}
+    prometheusCR:
+      enabled: {{ .Values.targetAllocator.prometheusCR.enabled }}
+      serviceMonitorSelector:
+        app: "cert-manager"
+
+  config:
+    receivers:
+      prometheus:
+        config:
+          scrape_configs:
+          - job_name: "otel-self-metrics"
+            scrape_interval: 10s
+            static_configs:
+            - targets: [ "0.0.0.0:8888" ]
+            metric_relabel_configs:
+            - action: labeldrop
+              regex: (id|name)
+              replacement: $$1
+            - action: labelmap
+              regex: label_(.+)
+              replacement: $$1 
+        target_allocator:
+          endpoint: http://otel-collector-ta-cert-manager-targetallocator
+          interval: 30s
+          collector_id: "${env:POD_NAME}"
+
+    exporters:
+      # NOTE: Prior to v0.86.0 use `logging` instead of `debug`.
+      #debug: {}
+      prometheusremotewrite:
+        endpoint: "http://kube-prometheus-stack-56-8-prometheus.default.svc.cluster.local:9090/api/v1/write"
+        external_labels:
+          pod_name: "${env:POD_NAME}"
+          namespace: {{ .Values.namespace }}
+          target_allocator: "true"
+          environment: "dev"
+          team: "security"
+
+    processors:
+      memory_limiter:
+        check_interval: 1s
+        limit_percentage: 75
+        spike_limit_percentage: 15
+      batch:
+        send_batch_size: 10000
+        timeout: 10s
+
+    service:
+      pipelines:
+        metrics:
+          receivers: [prometheus]
+          processors: [memory_limiter, batch]
+          exporters: [prometheusremotewrite]
