@@ -14,7 +14,8 @@ spec:
     prometheusCR:
       enabled: {{ .Values.targetAllocator.prometheusCR.enabled }}
       serviceMonitorSelector:
-        app: "kube-state-metrics"
+        matchLabels:
+          app: "kube-state-metrics"
         #app: {{ .Values.app }}
         #component: {{ .Values.targetAllocator.component }}
       #serviceMonitorSelector: {}
