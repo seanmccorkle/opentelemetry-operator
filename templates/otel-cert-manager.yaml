@@ -13,7 +13,8 @@ spec:
     prometheusCR:
       enabled: {{ .Values.targetAllocator.prometheusCR.enabled }}
       serviceMonitorSelector:
-        app: "cert-manager"
+        matchLabels:
+          app: "cert-manager"
 
   config:
     receivers:
