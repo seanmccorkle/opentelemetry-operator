@@ -1,4 +1,6 @@
 ---
+# https://github.com/open-telemetry/opentelemetry-operator/issues/2727
+# https://github.com/open-telemetry/opentelemetry-operator/blob/main/config/crd/bases/opentelemetry.io_opentelemetrycollectors.yaml#L42-L45
 #apiVersion: opentelemetry.io/v1alpha1 # deprecated
 apiVersion: opentelemetry.io/v1beta1
 kind: OpenTelemetryCollector
