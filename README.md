@@ -15,6 +15,7 @@
 [Target Allocator not able to allocate](https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/23342)<br>
 [opentelemetry.io: getting started](https://opentelemetry.io/docs/kubernetes/getting-started/)<br>
 [Target Allocator - ServiceMonitor scheme](https://github.com/open-telemetry/opentelemetry-operator/issues/1669)
+[Things You Might Not Have Known About the OpenTelemetry Operator](https://geekingoutpodcast.substack.com/p/otel-operator-q-and-a)<br>
 
 # install
 
