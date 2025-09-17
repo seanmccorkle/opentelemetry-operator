@@ -1,4 +1,4 @@
-# opentelemetry-operator
+# OpenTelemetry Operator
 
 [OpenTelemetry Operator](https://github.com/open-telemetry/opentelemetry-operator)<br>
 [github.com: Target Allocator](https://github.com/open-telemetry/opentelemetry-operator/blob/main/cmd/otel-allocator/README.md)<br>
@@ -17,8 +17,9 @@
 [Target Allocator - ServiceMonitor scheme](https://github.com/open-telemetry/opentelemetry-operator/issues/1669)<br>
 [Things You Might Not Have Known About the OpenTelemetry Operator](https://geekingoutpodcast.substack.com/p/otel-operator-q-and-a)<br>
 
-# install
+# Install
 
+## Cert Manager
 [cert-manager installation](https://cert-manager.io/docs/installation/)<br>
 [installing cert-manager](https://cert-manager.io/docs/installation/helm/#installing-cert-manager)<br>
 ```
@@ -26,6 +27,7 @@ helm repo add jetstack https://charts.jetstack.io --force-update
 helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.14.3 --set crds.enabled=true
 ```
 
+## Prometheus CRDs
 ```
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
@@ -33,6 +35,7 @@ helm install prometheus-crds prometheus-community/prometheus-operator-crds
 helm install prometheus prometheus-community/prometheus (optional)
 ```
 
+## OpenTelemetry Operator
 [docker pull opentelemetry-operator](https://github.com/open-telemetry/opentelemetry-operator/pkgs/container/opentelemetry-operator%2Fopentelemetry-operator)<br>
 ```
 docker pull ghcr.io/open-telemetry/opentelemetry-operator/opentelemetry-operator:main
@@ -47,7 +50,7 @@ helm install opentelemetry-operator open-telemetry/opentelemetry-operator -f val
 kubectl --namespace opentelemetry-operator-system get pods -l "app.kubernetes.io/instance=opentelemetry-operator"
 ```
 
-# images
+# Images
 
 ```
 .Values.manager.image = ghcr.io/open-telemetry/opentelemetry-operator/opentelemetry-operator:main
@@ -57,7 +60,7 @@ kubectl --namespace opentelemetry-operator-system get pods -l "app.kubernetes.io
 
 ```
 
-# troubleshooting
+# Troubleshooting
 
 [Troubleshooting the OpenTelemetry Target Allocator](https://trstringer.com/opentelemetry-target-allocator-troubleshooting/)<br>
 ```
