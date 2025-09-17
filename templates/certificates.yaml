@@ -1,0 +1,33 @@
+# Default issuer provided by OpenTelemetry Operator
+# - opentelemetry-operator-selfsigned-issuer
+#
+# Default issuer provided by OpenTelemetry collector
+# - otel-collector-ta-ca-issuer
+# - otel-collector-ta-self-signed-issuer
+
+# Secrets kubernetes.io/tls
+# - otel-collector-ta-ca-cert
+# - otel-collector-ta-ta-client-cert
+# - otel-collector-ta-ta-server-cert
+
+# Certificates created by cert-manager
+# - otel-collector-ta-ca-cert
+# - otel-collector-ta-ta-client-cert
+# - otel-collector-ta-ta-server-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "{{ .Values.targetAllocator.name }}-ta-client-cert"
+  namespace: {{ .Values.namespace }}
+spec:
+  secretName: "{{ .Values.targetAllocator.name }}-ta-client-cert" # This secret will store the generated certificate
+  issuerRef:
+    name: "opentelemetry-operator-selfsigned-issuer" # Reference to the Issuer or ClusterIssuer
+    kind: Issuer
+  #commonName: "{{ .Values.targetAllocator.name }}-cert-manager-collector"
+  commonName: "{{ .Values.targetAllocator.name }}-collector"
+  duration: 2160h # 90d
+  renewBefore: 360h # 15d
+  usages:
+    - client auth
