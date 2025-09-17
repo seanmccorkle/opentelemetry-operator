@@ -23,14 +23,28 @@
 [installing cert-manager](https://cert-manager.io/docs/installation/helm/#installing-cert-manager)<br>
 ```
 helm repo add jetstack https://charts.jetstack.io --force-update
-helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.15.1 --set crds.enabled=true
+helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.14.3 --set crds.enabled=true
+```
+
+```
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+helm install prometheus-crds prometheus-community/prometheus-operator-crds
+helm install prometheus prometheus-community/prometheus (optional)
 ```
 
 [docker pull opentelemetry-operator](https://github.com/open-telemetry/opentelemetry-operator/pkgs/container/opentelemetry-operator%2Fopentelemetry-operator)<br>
 ```
 docker pull ghcr.io/open-telemetry/opentelemetry-operator/opentelemetry-operator:main
+helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+helm repo update
+kubectl create namespace opentelemetry-operator-system
 
 helm install opentelemetry-operator ../opentelemetry-operator --namespace opentelemetry-operator-system --set admissionWebhooks.certManager.enabled=false --set admissionWebhooks.autoGenerateCert.enabled=true
+
+helm install opentelemetry-operator open-telemetry/opentelemetry-operator -f values.yaml -n opentelemetry-operator-system
+
+kubectl --namespace opentelemetry-operator-system get pods -l "app.kubernetes.io/instance=opentelemetry-operator"
 ```
 
 # images
